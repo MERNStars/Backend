@@ -13,7 +13,7 @@ const index = async (req, res) => {
 
 const createUser = async(req, res) => {
   const { username, password, isAdmin, email, age, religion, interests, remarks } = req.body;
-
+    //create a new user
     const newUser = new User({
       username, 
       password: "temp", 
@@ -24,22 +24,24 @@ const createUser = async(req, res) => {
       interests,
       remarks
     })
-
+    //set an encrypted password from the password provided
     newUser.setPassword(password);
-
+    //save the document
     newUser.save()
-    .then(()=>res.json('User added!'))
+    .then(()=>res.status(200).json('User added!'))//return the result
     .catch(err=> res.status(400).json('Error: ' + err));
 }
 
 const deleteUser = async (req, res)=> {
+    //find the user with the username and delete the document
   User.findOneAndDelete({username: req.params.username})
   .then(()=> res.json('User deleted.'))
   .catch(err => res.status(400).json('Error: ' + err));
 };
 
 const findOneUser = async (req, res)=> {
-//   console.log("User id: ", req.params.username);
+//find the user with the specified username and return all the detail
+//in the response JSON payload
   User.findOne({username: req.params.username})
   .then(user => res.json(user))
   .catch(err => res.status(400).json('Error: ' + err));
@@ -76,21 +78,36 @@ const login = async (req, res) => {
 }
 
 const subscribe = async (req, res) => {
+    //find the user with the specified username and change his/her newsletter to true
+    //indicating the person is willing to receive newsletter
     User.updateOne({username: req.params.username}, {newsletter: true})
     .then(result => {
-        console.log("Subscribe: " + result);
         res.status(200).json(result);
     })
     .catch(err => res.status(400).json("Error: " + err));
 }
 
 const unsubscribe = async (req, res) => {
+    //find the user with the specified username and change his/her newsletter to false
+    //indicating the person is NOT willing to receive newsletter
     User.updateOne({username: req.params.username}, {newsletter: false})
     .then(result => {
-        console.log("Subscribe: " + result);
+        // console.log("Subscribe: " + result);
         res.status(200).json(result);
     })
     .catch(err => res.status(400).json("Error: " + err));
 }
 
-module.exports = { index, createUser, deleteUser, findOneUser, login, subscribe, unsubscribe }
+const remark = async (req, res) => {
+    //find the user with the specified username and change his/her newsletter to false
+    //indicating the person is NOT willing to receive newsletter
+    const {username, remarks} = req.body;
+    User.updateOne({username: username}, {remarks: remarks})
+    .then(result => {
+        // console.log("Subscribe: " + result);
+        res.status(200).json(result);
+    })
+    .catch(err => res.status(400).json("Error: " + err));
+}
+
+module.exports = { index, createUser, deleteUser, findOneUser, login, subscribe, unsubscribe, remark }
