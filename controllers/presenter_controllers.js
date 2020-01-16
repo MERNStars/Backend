@@ -65,7 +65,14 @@ const findPresenterByName = (req, res) => {
     Presenter.find( { $or: [{ "first_name": { "$regex": query, "$options": "i" }}, {"last_name": { "$regex": query, "$options": "i" }}] })
     .then((presenters)=> res.status(200).json(presenters))
     .catch(err => res.status(400).json({success: false, message: `An error has occured and presenter ${_id} has NOT been deleted.`}));
-
 }
 
-module.exports = { index, createPresenter, updatePresenter, deletePresenter, findPresenterByName};
+const findPresenterById = (req, res) => {
+    const {id} = req.params;
+
+    Presenter.find({ "_id": id})
+    .then((presenters)=> res.status(200).json(presenters))
+    .catch(err => res.status(400).json({success: false, message: `An error has occured and presenter ${_id} has NOT been deleted.`}));
+}
+
+module.exports = { index, createPresenter, updatePresenter, deletePresenter, findPresenterByName, findPresenterById};
