@@ -2,8 +2,8 @@ const User = require('../models/user');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
-const index = async (req, res) => {
-    const {token_username, isAdmin} = await req.decoded;
+const index = (req, res) => {
+    const {token_username, isAdmin} = req.decoded;
     console.log("Getting all users...!");
     User.find({}, (err, users) => {
       if(err){
@@ -31,8 +31,8 @@ const index = async (req, res) => {
     return res;
 }
 
-const createUser = async(req, res) => {
-  const { username, password, isAdmin, email, age, religion, interests, remarks } = await req.body;
+const createUser = (req, res) => {
+  const { username, password, isAdmin, email, age, religion, interests, remarks } = req.body;
     //create a new user
     const newUser = new User({
       username, 
@@ -52,7 +52,7 @@ const createUser = async(req, res) => {
     .catch(err=> res.status(400).json('Error: ' + err));
 }
 
-const deleteUser = async (req, res)=> {
+const deleteUser = (req, res)=> {
     //find the user with the username and delete the document
     const {username} = req.params;
     const {token_username, isAdmin} = req.decoded;
@@ -79,7 +79,7 @@ const deleteUser = async (req, res)=> {
     return res;
 };
 
-const findOneUser = async (req, res)=> {
+const findOneUser = (req, res)=> {
 //find the user with the specified username and return all the detail
 //in the response JSON payload
     const {username} = req.params;
@@ -106,8 +106,8 @@ const findOneUser = async (req, res)=> {
     return res;
 };
 
-const login = async (req, res) => {
-  const {username, password} = await req.body;
+const login = (req, res) => {
+  const {username, password} = req.body;
   //find the specified user
   User.findOne({username : username }, function(err, user) {
     if (user === null) {
@@ -137,7 +137,7 @@ const login = async (req, res) => {
   return res
 }
 
-const subscribe = async (req, res) => {
+const subscribe = (req, res) => {
     //find the user with the specified username and change his/her newsletter to true
     //indicating the person is willing to receive newsletter
     const {username} = req.params;
@@ -168,7 +168,7 @@ const subscribe = async (req, res) => {
     return res;
 }
 
-const unsubscribe = async (req, res) => {
+const unsubscribe = (req, res) => {
     //find the user with the specified username and change his/her newsletter to false
     //indicating the person is NOT willing to receive newsletter
     const {username} = req.params;
@@ -200,7 +200,7 @@ const unsubscribe = async (req, res) => {
     return res;
 }
 
-const remark = async (req, res) => {
+const remark = (req, res) => {
     //find the user with the specified username and change his/her newsletter to false
     //indicating the person is NOT willing to receive newsletter
 
@@ -232,7 +232,7 @@ const remark = async (req, res) => {
     return res;
 }
 
-const update = async (req, res) => {
+const update = (req, res) => {
     const { username, email, age, religion, interests, remarks } = req.body;
     const {token_username, isAdmin} = req.decoded;
     //find the specified user
@@ -260,7 +260,7 @@ const update = async (req, res) => {
     return res;
 }
 
-const changePassword = async (req, res) => {
+const changePassword = (req, res) => {
     const {username, password} = req.body;
     const {token_username, isAdmin} = req.decoded;
     //find the specified user
