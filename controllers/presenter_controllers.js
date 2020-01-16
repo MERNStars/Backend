@@ -52,4 +52,11 @@ const updatePresenter = (req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 }
 
-module.exports = { index, createPresenter, updatePresenter};
+const deletePresenter = (req, res) => {
+    const {_id} = req.body;
+    Presenter.findByIdAndDelete(_id)
+    .then(()=> res.status(200).json({success: true, message: `Presenter ${_id} has been deleted.`}))
+    .catch(err => res.status(400).json({success: false, message: `An error has occured and presenter ${_id} has NOT been deleted.`}))
+}
+
+module.exports = { index, createPresenter, updatePresenter, deletePresenter};
