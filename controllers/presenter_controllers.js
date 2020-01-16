@@ -45,4 +45,11 @@ const createPresenter = (req, res) => {
     .catch(err=> res.status(400).json('Error: ' + err));
 }
 
-module.exports = { index, createPresenter}
+const updatePresenter = (req, res) => {
+    const { _id, first_name, last_name, title, qualification, short_description, long_description, avatar } = req.body;
+    Presenter.findByIdAndUpdate(_id, {first_name, last_name, title, qualification, short_description, long_description, avatar}, {useFindAndModify: false})
+    .then(() => res.status(200).json({success: true, message: `Presenter ${_id} has been updated.`}))
+    .catch(err => res.status(400).json('Error: ' + err));
+}
+
+module.exports = { index, createPresenter, updatePresenter};
