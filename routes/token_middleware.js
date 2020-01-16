@@ -2,7 +2,7 @@ let jwt = require( 'jsonwebtoken' );
 
 //authenticate if the user has a valid token
 let checkToken = (req, res, next) =>{
-  const {username} = req.params;
+  // const {username} = req.params;
   // Express headers are auto converted to lowercase
   let token = req.headers['x-access-token'] ||
               req.headers['authorization'] || "";
@@ -20,10 +20,10 @@ let checkToken = (req, res, next) =>{
           message: err.message
         } );
       }//check if someone else is trying to edit someone else information
-      else if(username === decoded['username']){
+      else /*if(username === decoded['username'])*/{
         req.decoded = decoded;
         next();
-      }
+      } /*
       else{
         return res.json(
           {
@@ -31,7 +31,7 @@ let checkToken = (req, res, next) =>{
             status: 403,
             message: "You don't have the right to edit someone else information"
           } );
-      }
+      }*/
     } );
   }
   else{
@@ -70,7 +70,7 @@ let checkAdminToken = (req, res, next) =>{
         return res.json({
             success: false,
             status: 403,
-            message: "You don't the admin rights"
+            message: "You don't have the admin rights"
           } );
       }
     } );
