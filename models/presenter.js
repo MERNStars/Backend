@@ -40,9 +40,9 @@ const presenterSchema = new Schema({
     default: 'my_avatar.jpg'
   }
 },{
-  collection: 'hosts'
+  collection: 'presenters'
 });
 
-const User = mongoose.model("Host", presenterSchema);
+const Presenter = mongoose.model("Presenter", presenterSchema);
 
-module.exports = User;
+module.exports = Presenter;
