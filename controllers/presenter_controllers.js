@@ -1,38 +1,41 @@
 const Presenter = require('../models/presenter');
 
 
-// const index = (req, res) => {
-//     const {token_username, isAdmin} = req.decoded;
-//     console.log("Getting all users...!");
-//     User.find({}, (err, users) => {
-//       if(err){
-//           res.status(400).send({
-//             success: false,
-//             message: 'Ooops!  Something went terribly wrong.'});
-//       }
-//       if (users === null) {
-//           res.status(400).send({
-//               success: false,
-//               message: 'There is nothing in the database'
-//           });
-//       }
-//       //Only Admin is allowed to have full access to user's detail
-//       else if(isAdmin || token_username === username){
-//           res.status(200).json(users);
-//       }
-//       else {
-//           res.status(403).send({
-//             message: 'Your action is unauthorized'
-//           })
-//       }
-//     });
+const index = (req, res) => {
+    const {isAdmin} = req.decoded;
 
-//     return res;
-// }
+    if(!isAdmin){
+        res.status(403).send({
+            message: 'Your action is unauthorized'
+          });
+    }
+    else{
+        //retrieve all records of the presenters
+        Presenter.find({}, (err, presenter) => {
+        if(err){
+            res.status(400).send({
+                success: false,
+                message: 'Ooops!  Something went terribly wrong.'});
+        }
+        if (presenter === null) {
+            res.status(400).send({
+                success: false,
+                message: 'There is nothing in the database'
+            });
+        }
+        //Only Admin is allowed to have full access to user's detail
+        else{
+            res.status(200).json(presenter);
+        }
+        });
+    }
+
+    return res;
+}
 
 const createPresenter = (req, res) => {
   const { first_name, last_name, title, qualification, short_description, long_description, avatar } = req.body;
-    //create a new user
+    //create a new presenter
     const newPresenter = new Presenter({
         first_name, last_name, title, qualification, short_description, long_description, avatar
     });
@@ -42,4 +45,4 @@ const createPresenter = (req, res) => {
     .catch(err=> res.status(400).json('Error: ' + err));
 }
 
-module.exports = { createPresenter}
+module.exports = { index, createPresenter}

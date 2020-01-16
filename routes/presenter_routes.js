@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const middleware = require('./token_middleware');
 
-const { createPresenter } = require("../controllers/presenter_controllers");
+const { index, createPresenter } = require("../controllers/presenter_controllers");
 
-router.post('/create', createPresenter);
+router.get('/', middleware.checkAdminToken, index);
+router.post('/create', middleware.checkAdminToken, createPresenter);
 
 module.exports = router;
