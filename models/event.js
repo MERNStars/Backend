@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-
 const Schema = mongoose.Schema;
-
 require('dotenv').config();
 
 const eventSchema = new Schema({
@@ -23,11 +21,11 @@ const eventSchema = new Schema({
       type: [{ type: String, cost: Number}],
       default: 0
   },
-  isFamilyFriendly: {
+  is_family_friendly: {
     type: Boolean,
     default: false
   },
-  minimumAge: { //age restriction
+  minimum_age: { //age restriction
     type: Number,
     default: 18
   },

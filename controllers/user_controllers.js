@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const index = (req, res) => {
     const {token_username, isAdmin} = req.decoded;
     console.log("Getting all users...!");
-    User.find({}, (err, users) => {
+    User.find({}, "username first_name last_name sex isAdmin email age religion newsletter interests", (err, users) => {
       if(err){
           res.status(400).send({
             success: false,
@@ -88,7 +88,7 @@ const findUserByUsername = (req, res)=> {
     const {username} = req.params;
     const {token_username, isAdmin} = req.decoded;
     
-    User.findOne({username: username}, (err, user) => {
+    User.findOne({username: username}, "username first_name last_name sex isAdmin email age religion newsletter interests", (err, user) => {
         if (user === null) {
             res.status(400).send({
                 success: false,
