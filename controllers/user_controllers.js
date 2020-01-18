@@ -32,7 +32,7 @@ const index = (req, res) => {
 }
 
 const createUser = (req, res) => {
-  const { username, password, first_name, last_name, sex, isAdmin, email, age, religion, interests} = req.body;
+  const { username, password, first_name, last_name, sex, isAdmin, email, age, religion, newsletter, interests} = req.body;
     //create a new user
     const newUser = new User({
       username, 
@@ -44,6 +44,7 @@ const createUser = (req, res) => {
       email,
       age,
       religion,
+      newsletter,
       interests
     })
     //set an encrypted password from the password provided
@@ -235,7 +236,7 @@ const makeRemark = (req, res) => {
 }
 
 const update = (req, res) => {
-    const { username, email, first_name, last_name, sex, age, religion, interests, remarks } = req.body;
+    const { username, email, first_name, last_name, sex, age, religion, newsletter, interests, remarks } = req.body;
     const {token_username, isAdmin} = req.decoded;
     //find the specified user
     User.findOne({username: username}, (err, user) => {
@@ -247,7 +248,7 @@ const update = (req, res) => {
         }//User can update his/her own account
         //Only admin can update everyone else account
         else if(isAdmin || token_username === username){
-            user.updateOne({username: username}, {email: email, first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, remarks: remarks});
+            user.updateOne({username: username}, {email: email, first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks});
             user.save()
             .then(() => res.status(200).json({success: true, message: `You have successfully updated the detail of ${username}.`}))
             .catch((err) => res.status(400).json({success: false, message: `You have failed to update the detail of ${username}.`}))
