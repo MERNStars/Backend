@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const middleware = require('./token_middleware');
 
-const {createEvent, index, update, deleteEvent, findEventByKeywords} = require('../controllers/event_controllers');
+const {createEvent, index, update, deleteEvent, findEventByKeywords, findEventById} = require('../controllers/event_controllers');
 
 router.get('/', index);
 router.get('/:keywords', findEventByKeywords);
+router.get('/:id/id', findEventById);
 router.post('/create', middleware.checkAdminToken, createEvent);
 router.patch('/update', middleware.checkAdminToken, update);
 router.delete('/delete', middleware.checkAdminToken, deleteEvent);

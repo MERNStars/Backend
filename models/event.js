@@ -61,7 +61,7 @@ const eventSchema = new Schema({
 // Registration Closed - The event has been closed.
   status: {
     type: String,
-    enum: ["scheduled", "canceled", "postponed", "in-progress", "on-hold", "stopped", "completed", "registration closed"],
+    enum: ["scheduled", "canceled", "postponed", "completed", "closed"],
     default: "scheduled"
   },
   images:{

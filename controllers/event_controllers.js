@@ -82,17 +82,17 @@ const findEventByKeywords = (req, res) => {
     const {keywords} = req.params;
     
     //break up the keywords and form a series of conditions for the queiry
-    const conditions1 = keywords.split(' ').map(keyword => { 
+    const byEventName = keywords.split(' ').map(keyword => { 
         return JSON.parse(`{"event_name": { "$regex": "${keyword}", "$options": "i" }}`);
     });
-    const conditions2 = keywords.split(' ').map(keyword => { 
+    const byCategory = keywords.split(' ').map(keyword => { 
         return JSON.parse(`{"event_category": { "$regex": "${keyword}", "$options": "i" }}`);
     });
-    let conditions3 = (keywords.split(' ').map(keyword => { 
+    let byDescription = (keywords.split(' ').map(keyword => { 
         return JSON.parse(`{"description": { "$regex": "${keyword}", "$options": "i" }}`);
     }));
     
-    const conditions = [...conditions1, ...conditions2, ...conditions3]
+    const conditions = [...byEventName, ...byCategory, ...byDescription]
 
     console.log(conditions);
 
@@ -101,4 +101,16 @@ const findEventByKeywords = (req, res) => {
     .catch(err => res.status(400).json({success: false, message: `An error has occured.`}));
 }
 
-module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords }
+const findEventById = (req, res) => {
+    const {id} = req.params;
+
+    Event.findById(id, (err, result) => {
+        if(err){
+            res.status(400).json(err)
+        }
+        res.status(200).json(result);
+    });
+    return res;
+}
+
+module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords, findEventById }
