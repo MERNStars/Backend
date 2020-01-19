@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
-
 const Schema = mongoose.Schema;
-
 const crypto = require('crypto');
-
 require('dotenv').config();
 
 const userSchema = new Schema({
@@ -19,6 +16,21 @@ const userSchema = new Schema({
     type: String,
     minlength: 8,
     required: true
+  },
+  first_name:{
+    type: String,
+    required: true,
+    minlength: 2  //Some Asian names are just 2 characters... Li Qi
+  },
+  last_name:{
+    type: String,
+    required: true,
+    minlength: 2 //Jack Ma
+  },
+  sex: {
+    type: String,
+    enum: ["male", "female", "others", "unspecified"],
+    default: "unspecified"
   },
   isAdmin: 
   {
@@ -54,7 +66,8 @@ const userSchema = new Schema({
     type: [String]
   },
   remarks:{
-    type: String
+    type: String,
+    default: ""
   }
 },{
   collection: 'users'

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const index = (req, res) => {
     const {token_username, isAdmin} = req.decoded;
     console.log("Getting all users...!");
-    User.find({}, (err, users) => {
+    User.find({}, "username first_name last_name sex isAdmin email age religion newsletter interests", (err, users) => {
       if(err){
           res.status(400).send({
             success: false,
@@ -32,17 +32,20 @@ const index = (req, res) => {
 }
 
 const createUser = (req, res) => {
-  const { username, password, isAdmin, email, age, religion, interests, remarks } = req.body;
+  const { username, password, first_name, last_name, sex, isAdmin, email, age, religion, newsletter, interests} = req.body;
     //create a new user
     const newUser = new User({
       username, 
-      password: "temp", 
+      password: "temp",
+      first_name, 
+      last_name, 
+      sex, 
       isAdmin, 
       email,
       age,
       religion,
-      interests,
-      remarks
+      newsletter,
+      interests
     })
     //set an encrypted password from the password provided
     newUser.setPassword(password);
@@ -79,13 +82,13 @@ const deleteUser = (req, res)=> {
     return res;
 };
 
-const findOneUser = (req, res)=> {
+const findUserByUsername = (req, res)=> {
 //find the user with the specified username and return all the detail
 //in the response JSON payload
     const {username} = req.params;
     const {token_username, isAdmin} = req.decoded;
     
-    User.findOne({username: username}, (err, user) => {
+    User.findOne({username: username}, "username first_name last_name sex isAdmin email age religion newsletter interests", (err, user) => {
         if (user === null) {
             res.status(400).send({
                 success: false,
@@ -200,7 +203,7 @@ const unsubscribe = (req, res) => {
     return res;
 }
 
-const remark = (req, res) => {
+const makeRemark = (req, res) => {
     //find the user with the specified username and change his/her newsletter to false
     //indicating the person is NOT willing to receive newsletter
 
@@ -232,31 +235,26 @@ const remark = (req, res) => {
     return res;
 }
 
-const update = (req, res) => {
-    const { username, email, age, religion, interests, remarks } = req.body;
-    const {token_username, isAdmin} = req.decoded;
-    //find the specified user
-    User.findOne({username: username}, (err, user) => {
-        if (user === null) {
-            res.status(400).send({
-                success: false,
-                message: 'User not found.'
-            });
-        }//User can update his/her own account
-        //Only admin can update everyone else account
-        else if(isAdmin || token_username === username){
-            user.updateOne({username: username}, {email: email, religion: religion, age: age, interests: interests, remarks: remarks});
-            user.save()
-            .then(() => res.status(200).json({success: true, message: `You have successfully updated the detail of ${username}.`}))
-            .catch((err) => res.status(400).json({success: false, message: `You have failed to update the detail of ${username}.`}))
-        }
-        else {
-            res.status(403).send({
-              message: 'Your action is unauthorized'
-            })
-        }
-    });
+const update = async (req, res) => {
+    const { username, email, first_name, last_name, sex, age, religion, newsletter, interests, remarks } = req.body;
+    const {isAdmin, token_username} = req.decoded;
 
+    //A person can only change his/her own detail unless he/she is an admin
+    if(!(isAdmin || token_username === user))//if 
+        return res.status(400).json({success: false, message: "You don't have the administrative rights to carryout this update."});
+
+    res = await User.updateOne({username: username}, {email: email, first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks}, 
+        (err, result) =>{
+        if(err){
+            res.status(400).json(err)
+        }
+        
+        if(result.n > 0)
+            res.status(200).json(result);
+        else
+            res.status(400).json(result);
+    })
+    .catch(err => res.status(400).json(err));
     return res;
 }
 
@@ -289,4 +287,4 @@ const changePassword = (req, res) => {
     return res;
 }
 
-module.exports = { index, createUser, deleteUser, findOneUser, login, subscribe, unsubscribe, remark, update, changePassword }
+module.exports = { index, createUser, deleteUser, findUserByUsername, login, subscribe, unsubscribe, makeRemark, update, changePassword }
