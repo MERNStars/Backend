@@ -235,31 +235,26 @@ const makeRemark = (req, res) => {
     return res;
 }
 
-const update = (req, res) => {
+const update = async (req, res) => {
     const { username, email, first_name, last_name, sex, age, religion, newsletter, interests, remarks } = req.body;
-    const {token_username, isAdmin} = req.decoded;
-    //find the specified user
-    User.findOne({username: username}, (err, user) => {
-        if (user === null) {
-            res.status(400).send({
-                success: false,
-                message: 'User not found.'
-            });
-        }//User can update his/her own account
-        //Only admin can update everyone else account
-        else if(isAdmin || token_username === username){
-            user.updateOne({username: username}, {email: email, first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks});
-            user.save()
-            .then(() => res.status(200).json({success: true, message: `You have successfully updated the detail of ${username}.`}))
-            .catch((err) => res.status(400).json({success: false, message: `You have failed to update the detail of ${username}.`}))
-        }
-        else {
-            res.status(403).send({
-              message: 'Your action is unauthorized'
-            })
-        }
-    });
+    const {isAdmin, token_username} = req.decoded;
 
+    //A person can only change his/her own detail unless he/she is an admin
+    if(!(isAdmin || token_username === user))//if 
+        return res.status(400).json({success: false, message: "You don't have the administrative rights to carryout this update."});
+
+    res = await User.updateOne({username: username}, {email: email, first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks}, 
+        (err, result) =>{
+        if(err){
+            res.status(400).json(err)
+        }
+        
+        if(result.n > 0)
+            res.status(200).json(result);
+        else
+            res.status(400).json(result);
+    })
+    .catch(err => res.status(400).json(err));
     return res;
 }
 
