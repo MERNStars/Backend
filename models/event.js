@@ -7,7 +7,7 @@ const feeSchema = new Schema(
 );
 
 const dependentSchema = new Schema({name: String, age: Number});
-const atteneeSchema = new Schema({username: String, friends: [String], dependents:[dependentSchema]});
+const attendeeSchema = new Schema({username: String, friends: [String], dependents:[dependentSchema]});
 
 const eventSchema = new Schema({
   event_name: {
@@ -24,6 +24,10 @@ const eventSchema = new Schema({
       type: {begin: Date, end: Date, presenter_ids: [mongoose.Types.ObjectId]},
       required: true
   },
+  registration_closed_date: {
+    type: Date,
+    required: true
+  },
   fee:{//eg. infant(2 and below): free, child (3-12): $5, full fee: $50
       type: [feeSchema],
       default: [{"type": "free", "cost": 0}]
@@ -36,23 +40,46 @@ const eventSchema = new Schema({
     type: Number,
     default: 18
   },
-  maximum_capacity: {
-    type: Number,
-    default: 50
-  },
   event_category:{
       type: String,
       enum: ["bible seminar", "career seminar", "exercise class", "health seminar", "healthy cooking class", "lifestyle change workshop", "mental health workshop", "massage service", "others", "quit smoking/other addiction", "weight-loss program"],
       default: "health talk"
+  },
+  //if true, it will be visible on the website
+  //if false it will not be shown
+  published:{
+    type: Boolean,
+    default: false
+  },
+  //indicating the status of the event, 
+//   Scheduled - The event's Date Start is in the future. When events are generated, or when you manually enter an event, by default, its status is set to Scheduled.
+// Canceled - The event has been cancelled.
+// In Progress - The event has begun, but is not yet completed.
+// On-Hold - The event has been placed on hold before it began.
+// Stopped - The event began but was stopped before completion.
+// Completed - The event has completed.
+// Registration Closed - The event has been closed.
+  status: {
+    type: String,
+    enum: ["scheduled", "canceled", "postponed", "completed", "closed"],
+    default: "scheduled"
   },
   images:{
       //In case we want to allow multiple photos to be uploaded
     type: [String],
     default: ['my_event.jpg']
   },
+  event_capacity: {
+    type: Number,
+    default: 50
+  },
+  attendee_count: {
+    type: Number,
+    default: 0
+  },
   attendees:{ 
       //e.g. [{someuserid, friends: ["Jack", "Eddie", "Lisa"], dependents: [{"Jake", 5}, {"Abbie": 8}]}]
-      type: [atteneeSchema]
+      type: [attendeeSchema]
   }
 },{
   collection: 'events'
