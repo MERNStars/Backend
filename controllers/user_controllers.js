@@ -32,16 +32,14 @@ const index = (req, res) => {
 }
 
 const createUser = (req, res) => {
-  const { username, password, first_name, last_name, sex, isAdmin, email, age, religion, newsletter, interests} = req.body;
+  const { username, password, first_name, last_name, sex, email, age, religion, newsletter, interests} = req.body;
     //create a new user
     const newUser = new User({
       username, 
       password: "temp",
       first_name, 
       last_name, 
-      sex, 
-      isAdmin, 
-      email,
+      sex,
       age,
       religion,
       newsletter,
@@ -236,14 +234,14 @@ const makeRemark = (req, res) => {
 }
 
 const update = async (req, res) => {
-    const { username, email, first_name, last_name, sex, age, religion, newsletter, interests, remarks } = req.body;
+    const { username, first_name, last_name, sex, age, religion, newsletter, interests, remarks } = req.body;
     const {isAdmin, token_username} = req.decoded;
 
     //A person can only change his/her own detail unless he/she is an admin
     if(!(isAdmin || token_username === user))//if 
         return res.status(400).json({success: false, message: "You don't have the administrative rights to carryout this update."});
 
-    res = await User.updateOne({username: username}, {email: email, first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks}, 
+    res = await User.updateOne({username: username}, {first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks}, 
         (err, result) =>{
         if(err){
             res.status(400).json(err)
