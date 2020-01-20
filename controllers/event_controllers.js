@@ -141,6 +141,8 @@ const attendEvent = async (req, res) => {
     const new_attendee = {username, friends, dependents};
 
     const filter = { "_id": _id};
+    console.log("Event id: " + _id);
+    
 
     Event.findOne({ _id: _id}, (err, event) => {
         console.log("Event found: " + event);
@@ -159,7 +161,7 @@ const attendEvent = async (req, res) => {
             Event.updateOne(filter, {attendees: existing_attendees, attendee_count: num_attendee}, 
                 (err, result) =>{
                 if(err){
-                    res.status(500).json(err)
+                    res.status(500).json("Failed to update" + err);
                 }
                 console.log("Update result: " + result);
                 if(result.n > 0)
