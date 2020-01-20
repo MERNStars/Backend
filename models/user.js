@@ -8,7 +8,12 @@ const userSchema = new Schema({
   {
     type: String,
     required: true,
-    minlength: 5,
+    validate: {
+      validator: function(v) {
+        return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(v);
+      },
+      message: props => `${props.value} is not a valid email address!`
+    },
     unique: true
   },
   password:
@@ -36,16 +41,6 @@ const userSchema = new Schema({
   {
     type: Boolean,
     default: false
-  },
-  email:
-  {
-    type: String,
-    validate: {
-      validator: function(v) {
-        return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(v);
-      },
-      message: props => `${props.value} is not a valid email address!`
-    }
   },
   newsletter:{
     type: Boolean,

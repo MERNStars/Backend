@@ -18,16 +18,19 @@ const eventSchema = new Schema({
       type: String,
       required: true
   },
-  event_date_and_presenters:{
+  event_date:{
       //I'm setting this to an array, in case we want to allow recurring event
       //e.g. [{begin: "12/Feb/2020 5:30PM", end: "12/Feb/2020 8:30PM", presenters: ["presenter_id1", "presenter_id2"]}]
-      type: {begin: Date, end: Date, presenter_ids: [mongoose.Types.ObjectId]},
+      type: {begin: Date, end: Date},
       required: true
+      //take the presenter out
+    
   },
   registration_closed_date: {
     type: Date,
     required: true
   },
+  presenters: [mongoose.Types.ObjectId],
   fee:{//eg. infant(2 and below): free, child (3-12): $5, full fee: $50
       type: [feeSchema],
       default: [{"type": "free", "cost": 0}]
@@ -42,7 +45,7 @@ const eventSchema = new Schema({
   },
   event_category:{
       type: String,
-      enum: ["bible seminar", "career seminar", "exercise class", "health seminar", "healthy cooking class", "lifestyle change workshop", "mental health workshop", "massage service", "others", "quit smoking/other addiction", "weight-loss program"],
+      enum: ["bible seminar", "career seminar", "exercise class", "health seminar", "healthy cooking", "lifestyle change workshop", "mental health workshop", "massage service", "others", "addiction recovery", "weight-loss program"],
       default: "health talk"
   },
   //if true, it will be visible on the website
@@ -61,7 +64,7 @@ const eventSchema = new Schema({
 // Registration Closed - The event has been closed.
   status: {
     type: String,
-    enum: ["scheduled", "canceled", "postponed", "completed", "closed"],
+    enum: ["scheduled", "canceled", "postponed", "completed", "sold out"],
     default: "scheduled"
   },
   images:{

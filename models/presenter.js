@@ -35,6 +35,10 @@ const presenterSchema = new Schema({
       type: String,
       required: true
   },
+  //Todo: modify the controller
+  contact_info:{
+    type: [{name: String, url: String}]
+  },
   avatar:{
     type: String,
     default: 'my_avatar.jpg'
