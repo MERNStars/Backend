@@ -9,7 +9,7 @@ router.get('/:keywords', findEventByKeywords);
 router.get('/:id/id', findEventById);
 router.get('/category/:keywords', findEventCategory);
 router.post('/create', middleware.checkAdminToken, createEvent);
-router.patch('/update', middleware.checkAdminToken, update);
+router.patch('/update', middleware.checkToken, update);
 router.delete('/delete', middleware.checkAdminToken, deleteEvent);
 
 module.exports = router;
