@@ -22,6 +22,15 @@ mongoose.connect(process.env.DB_URL, dbConfig, (err) => {
 });
 
 app.use(express.json());
+// NEW - Add CORS headers - see https://enable-cors.org/server_expressjs.html
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  });
 app.use(cors());
 
 //Connecting the routes

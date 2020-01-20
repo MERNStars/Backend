@@ -70,9 +70,18 @@ const findPresenterByName = (req, res) => {
 const findPresenterById = (req, res) => {
     const {id} = req.params;
 
-    Presenter.find({ "_id": id})
+    Presenter.findOne({ "_id": id})
     .then((presenters)=> res.status(200).json(presenters))
     .catch(err => res.status(400).json({success: false, message: `An error has occured and presenter ${_id} has NOT been deleted.`}));
 }
 
-module.exports = { index, createPresenter, updatePresenter, deletePresenter, findPresenterByName, findPresenterById};
+const findManyPresenters = (req, res) => {
+    const {query} = req.params;
+    console.log(query);
+    ids = query.split(',');
+    Presenter.find({ _id: { $in: ids}})
+    .then((presenters)=> res.status(200).json(presenters))
+    .catch(err => res.status(400).json({success: false, message: `An error has occured.`}));
+}
+
+module.exports = { index, createPresenter, updatePresenter, deletePresenter, findPresenterByName, findPresenterById, findManyPresenters};
