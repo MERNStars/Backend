@@ -1,4 +1,5 @@
 const Event = require('../models/event');
+const Presenter = require('../models/presenter');
 
 //create an event
 const createEvent = (req, res) => {
@@ -115,13 +116,44 @@ const findEventCategory = (req, res) => {
 
 const findEventById = (req, res) => {
     const {id} = req.params;
-
-    Event.findById(id, (err, result) => {
-        if(err){
-            res.status(400).json(err)
-        }
-        res.status(200).json(result);
+    // const events = null;
+    Event.findById(id).lean()
+    .then(event => {
+        // console.log(event);
+        if (!event) throw new Error('Event not found')
+        return event;
+    })
+    .then(event=>{
+        Presenter.find({ _id: { $in: event.presenters}}).lean()
+        .then(presenters=>{
+            // console.log(presenters);
+            const event_detail = {...event}
+            if(presenters)
+                event_detail.presenter_detail = presenters;
+            console.log(event_detail);
+            res.send(event_detail);
+        })
+    })
+    .catch(err => {
+        console.log('error', err);
+        res.status(400).send(err);
     });
+
+
+
+    //     },
+    //     (event, done)=>{
+    //         Presenter.find({ _id: { $in: event.presenters}}).lean.exec(done);
+    //     }
+    // ], (err, presenter)=>{
+    //     // if an error occurs during the above tasks ^, it will come down here
+    //     if (err) {
+    //         console.log(err);
+    //         return res.status(400).send(e);
+    //     }
+    //     // otherwise if all tasks finish, it will come down here
+    //     res.json(presenter);
+    // });
     return res;
 }
 
