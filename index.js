@@ -11,7 +11,7 @@ const app = express();
 
 //Mongoose
 
-const dbConfig = { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true };
+const dbConfig = { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true , useFindAndModify: false };
 
 mongoose.connect(process.env.DB_URL, dbConfig, (err) => {
     if (err)
