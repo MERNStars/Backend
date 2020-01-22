@@ -31,15 +31,10 @@ const index = (req, res) => {
 }
 
 const update = async (req, res) => {
-    const {_id, event_name, description, event_date, presenters,registration_closed_date, fee, is_family_friendly, minimum_age, event_capacity, event_category, images, published, status, attendee_count} = req.body;
+    const {_id, event_name, description, event_date, presenters,registration_closed_date, fee, is_family_friendly, minimum_age, event_capacity, event_category, images, published, status, attendee_count, attendees} = req.body;
 
-    const {isAdmin} = req.decoded;
-    //if the user is not an admin, he has no business here.
-    if(!isAdmin){
-        return res.status(401).json({success: false, message: "You don't have the administrative rights to carryout this update."});
-    }
 
-    res = await Event.updateOne({_id: _id}, {event_name, description, event_date, presenters, registration_closed_date, fee, is_family_friendly, minimum_age, event_category, images, published, status, event_capacity, attendee_count}, 
+    res = await Event.updateOne({_id: _id}, {event_name, description, event_date, presenters, registration_closed_date, fee, is_family_friendly, minimum_age, event_category, images, published, status, event_capacity, attendee_count, attendees}, 
         (err, result) =>{
         if(err){
             res.status(500).json(err)

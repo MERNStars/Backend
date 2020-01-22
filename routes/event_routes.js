@@ -12,6 +12,7 @@ router.post('/create', middleware.checkAdminToken, createEvent);
 router.patch('/update', middleware.checkAdminToken, update);
 router.patch('/attend', middleware.checkAdminToken, attendEvent);
 router.patch('/unattend', middleware.checkAdminToken, unattendEvent);
+
 router.delete('/delete', middleware.checkAdminToken, deleteEvent);
 
 module.exports = router;

@@ -125,6 +125,7 @@ const login = (req, res) => {
         res.status(201).json({
           success: true,
           message: 'Authentication successful',
+          isAdmin: user.isAdmin,
           token: token
         });
       }
