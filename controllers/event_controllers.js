@@ -183,7 +183,7 @@ const getEventAttendees = (req, res) => {
     return res;
 }
 
-const attendEvent = async (req, res) => {
+const attendEvent = (req, res) => {
     const {_id, username, friends, dependents} = req.body;
     const new_attendee = {username, friends, dependents};
 
@@ -225,7 +225,7 @@ const attendEvent = async (req, res) => {
     return res;
 }
 
-const unattendEvent = async (req, res) => {
+const unattendEvent = (req, res) => {
     const {_id, username} = req.body;
 
     const filter = { "_id": _id};
@@ -265,5 +265,7 @@ const unattendEvent = async (req, res) => {
     
     return res;
 }
+
+
 
 module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent, getEventAttendees }
