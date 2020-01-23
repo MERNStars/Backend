@@ -3,6 +3,6 @@ const router = express.Router();
 const {getImageUrl} = require('../controllers/image_controllers');
 const middleware = require('./token_middleware');
 
-router.get('/geturl', middleware.checkToken, getImageUrl);
+router.post('/geturl', middleware.checkToken, getImageUrl);
 
 module.exports = router
