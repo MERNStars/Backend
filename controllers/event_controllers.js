@@ -1,5 +1,6 @@
 const Event = require('../models/event');
 const Presenter = require('../models/presenter');
+const User = require('../models/user');
 
 //create an event
 const createEvent = (req, res) => {
@@ -50,7 +51,7 @@ const update = async (req, res) => {
 }
 
 const deleteEvent = (req, res) => {
-    const {_id} = req.body;
+    const {id} = req.params;
 
     const {isAdmin} = req.decoded;
     //if the user is not an admin, he has no business here.
@@ -58,7 +59,7 @@ const deleteEvent = (req, res) => {
         return res.status(500).json({success: false, message: "You don't have the administrative rights to carryout this update."});
     }
 
-    Event.findByIdAndDelete(_id, 
+    Event.findByIdAndDelete(id, 
         (err, result) =>{
         if(err){
             res.status(400).json(err)
@@ -128,6 +129,52 @@ const findEventById = (req, res) => {
             // console.log(event_detail);
             res.send(event_detail);
         })
+    })
+    .catch(err => {
+        console.log('error', err);
+        res.status(400).send(err);
+    });
+    return res;
+}
+
+const getEventAttendees = (req, res) => {
+    const {id} = req.params;
+    // const events = null;
+    Event.findById(id).lean()
+    .then(event => {
+        // console.log(event);
+        if (!event) throw new Error('Event not found')
+        return event;
+    })
+    .then(event=>{
+        //if no one is attending the event 
+        if(event.attendees.length == 0){
+            res.status(404).json({success: false, message: "No one is attending the event yet.", data: []})
+        }
+        else{
+            attendingUsers = event.attendees.map(attendee => attendee.username);
+            //find all the users that are attending the event and return their detail
+            // console.log("We've got some attendees!" + attendingUsers);
+            
+            User.find({ username: { $in: attendingUsers}}, "username first_name last_name")
+            .then(users=>{
+                
+                let resultUsers = [...event.attendees];
+                // console.log("User Detail: " + users);
+                users.forEach(user => {
+                    // console.log("Hello!");
+                    const index = resultUsers.findIndex((element)=>user.username === element.username);
+                    // console.log("Found at: " + index);
+                    
+                    resultUsers[index].first_name = user.first_name;
+                    resultUsers[index].last_name = user.last_name;
+                });
+                
+                res.status(200).send(resultUsers);
+            })
+            .catch(err => res.status(404).json({success: false, message: "A problem has occurred.", data: []}))
+            
+        }
     })
     .catch(err => {
         console.log('error', err);
@@ -219,4 +266,4 @@ const unattendEvent = async (req, res) => {
     return res;
 }
 
-module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent }
+module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent, getEventAttendees }
