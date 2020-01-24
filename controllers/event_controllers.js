@@ -266,6 +266,23 @@ const unattendEvent = (req, res) => {
     return res;
 }
 
+//toggle the published status of the event
+const togglePublish = async (req, res) => {
+    const {_id, published} = req.body;
+
+    const filter = { "_id": _id};
+    const update = { published: published };
+
+    let event = await Event.findOneAndUpdate(filter, update, {new: true})
+    .catch(err=>res.status(400).json({success: false, message: "Failed to update the event."}));
+    
+    if (event) {
+        res.status(200).json({success: true, message: "Sucessfully updated the published status."});
+    }
+    
+    return res;
+}
 
 
-module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent, getEventAttendees }
+
+module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent, getEventAttendees, togglePublish }
