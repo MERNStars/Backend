@@ -275,9 +275,10 @@ const togglePublish = async (req, res) => {
 
     let event = await Event.findOneAndUpdate(filter, update, {new: true})
     .catch(err=>res.status(400).json({success: false, message: "Failed to update the event."}));
+    console.log(event);
     
     if (event) {
-        res.status(200).json({success: true, message: "Sucessfully updated the published status."});
+        res.status(200).json(event);
     }
     
     return res;
