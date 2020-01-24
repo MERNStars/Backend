@@ -275,7 +275,22 @@ const togglePublish = async (req, res) => {
 
     let event = await Event.findOneAndUpdate(filter, update, {new: true})
     .catch(err=>res.status(400).json({success: false, message: "Failed to update the event."}));
-    console.log(event);
+    
+    if (event) {
+        res.status(200).json(event);
+    }
+    
+    return res;
+}
+
+const statusUpdate = async (req, res) => {
+    const {_id, status} = req.body;
+
+    const filter = { "_id": _id};
+    const update = { status: status };
+
+    let event = await Event.findOneAndUpdate(filter, update, {new: true})
+    .catch(err=>res.status(400).json({success: false, message: "Failed to update the status of the event. Please, check your status value."}));
     
     if (event) {
         res.status(200).json(event);
@@ -286,4 +301,4 @@ const togglePublish = async (req, res) => {
 
 
 
-module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent, getEventAttendees, togglePublish }
+module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent, getEventAttendees, togglePublish, statusUpdate }
