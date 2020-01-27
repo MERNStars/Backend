@@ -31,22 +31,29 @@ const index = (req, res) => {
     return res;
 }
 
-const update = async (req, res) => {
+const update = (req, res) => {
+    console.log("Updating event in the backend...");
+    
     const {_id, event_name, description, event_date, presenters,registration_closed_date, fee, is_family_friendly, minimum_age, event_capacity, event_category, images, published, status, attendee_count, attendees} = req.body;
 
+    const update = {event_name: event_name, description: description, event_date: event_date, presenters: presenters, registration_closed_date: registration_closed_date, fee: fee, is_family_friendly: is_family_friendly, minimum_age: minimum_age, event_category: event_category, images: images, published: published, status: status, event_capacity: event_capacity, attendee_count: attendee_count, attendees: attendees};
 
-    res = await Event.updateOne({_id: _id}, {event_name, description, event_date, presenters, registration_closed_date, fee, is_family_friendly, minimum_age, event_category, images, published, status, event_capacity, attendee_count, attendees}, 
-        (err, result) =>{
-        if(err){
-            res.status(500).json(err)
+    console.log(update);
+    
+    Event.findOneAndUpdate({_id: _id}, { $set: update}, {new: true}
+    )
+    .then(result =>{
+        if(result){
+            // console.log(result);        
+            res.status(200).json(result);
         }
-        
-        if(result.n > 0)
-            res.status(204).json(result);
-        else
-            res.status(400).json(result);
+        else{
+            res.status(400).json({success: false, message: "Failed to update the event"});
+        }
     })
-    .catch(err => res.status(400).json(err));
+    .catch(err => {
+        res.status(500).json(err);
+    });
     return res;
 }
 
