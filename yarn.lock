@@ -117,6 +117,11 @@ cors@^2.8.5:
     object-assign "^4"
     vary "^1"
 
+date-and-time@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/date-and-time/-/date-and-time-0.12.0.tgz#6d30c91c47fa72edadd628b71ec2ac46909b9267"
+  integrity sha512-n2RJIAp93AucgF/U/Rz5WRS2Hjg5Z+QxscaaMCi6pVZT1JpJKRH+C08vyH/lRR1kxNXnPxgo3lWfd+jCb/UcuQ==
+
 debug@2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -699,10 +704,10 @@ uuid@3.4.0:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
-uuidv4@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/uuidv4/-/uuidv4-6.0.1.tgz#dd28cbe6057186091925da2c327d75b51ffe3628"
-  integrity sha512-m/4hai0L5/Wg0wmL4EHVdn/ZkC3gDQaxMB6PK9OllshhXvIyIl5YF+JbZNKJXsDW3ZgH8wboRExOmRSao/zU7Q==
+uuidv4@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/uuidv4/-/uuidv4-6.0.2.tgz#c0154f2592420c523062def3a84fc1cd235259f3"
+  integrity sha512-SHfZgAT2pz0TAXtclFMsTrT55U1/HTLg7xSZYDhX953sdcVIJ9lanIs8/BFSjxGmg4cEjc8P7HXPK7EPOD/nfA==
   dependencies:
     uuid "3.4.0"
 
