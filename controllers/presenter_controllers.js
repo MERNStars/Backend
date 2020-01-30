@@ -2,15 +2,6 @@ const Presenter = require('../models/presenter');
 
 
 const index = (req, res) => {
-    // const {isAdmin} = req.decoded;
-
-    // if(!isAdmin){
-    //     res.status(403).send({
-    //         message: 'Your action is unauthorized'
-    //       });
-    // }
-    // else{
-        //retrieve all records of the presenters
         Presenter.find({}, (err, presenter) => {
         if(err){
             res.status(400).send({
