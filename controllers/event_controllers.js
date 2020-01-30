@@ -20,14 +20,30 @@ const createEvent = (req, res) => {
 }
 
 const index = (req, res) => {
-    Event.find({}, (err, result) =>{
+    let events = [];
+    Event.find({}).lean()
+    .exec((err, result) =>{
         if(err){
             res.status(500).json(err);
         }
         else{
-            res.status(200).json(result);
-        }
+            result.forEach((event, index) => {
+                Presenter.find({ _id: {$in: [...event.presenters]}})
+                .lean()
+                .exec((err, presenters) => {
+                    event["presenters_detail"] = presenters;
+                    console.log(event);
+                    events.push(event);
+                    if(index === result.length -1)
+                    {
+                        res.status(200).json(events);
+                    }
+                });
+            });
+            
+        }  
     });
+    
     return res;
 }
 

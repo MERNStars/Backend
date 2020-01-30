@@ -8,8 +8,8 @@ const date = require('date-and-time');
 
 const reset = (req, res) => {
     //reset the password
-    const { uniqueKey } = req.params;
-    const { password } = req.body;
+    // const {  } = req.params;
+    const { password, uniqueKey } = req.body;
 
     Request.findOne({uuid_key: uniqueKey})
     .then(request => {
@@ -201,7 +201,7 @@ const generateUniqueLink = (req, res) => {
     User.findOne({"username": email})
     .then(user => {
         //if the username can't be found in the system
-        console.log("We can find you in our record.");
+        // console.log("We can find you in our record.");
         // console.log(result);
         
         if(!user){
@@ -209,25 +209,25 @@ const generateUniqueLink = (req, res) => {
         }
         else{
             //1. generate an uuid key and store it in the database
-            console.log("Generating unique key");
+            // console.log("Generating unique key");
             
             const uniqueKey = uuid();
-            console.log(uniqueKey);
+            // console.log(uniqueKey);
             // console.log(date.addHours(new Date(), 1));
             const now = new Date();
             const expiryDate = date.addHours(now, 1);
            
             const newRequest = new Request({uuid_key: uniqueKey, username: email, expiry_date: expiryDate});
-            console.log("Created a new request.");
+            // console.log("Created a new request.");
 
             //2. send an email with the uuid link
             emailUniqueLink(email, uniqueKey, user.first_name)
             .catch(err => console.log(err));
             
-            console.log("Email send...");
+            // console.log("Email send...");
             newRequest.save()
             .then(()=>{
-                console.log("Request saved.")
+                // console.log("Request saved.")
                 return res.status(200).json({success: true, message: "We've sent you an email with a unique link to reset your password.  Please, check your inbox or even junk mail."});
             })
             .catch(err => {console.log(err);
