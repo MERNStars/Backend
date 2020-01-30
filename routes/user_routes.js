@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const middleware = require('./token_middleware');
 
-const { index, createUser, findUserByUsername, login , deleteUser, subscribe, unsubscribe, makeRemark, update, changePassword} = require("../controllers/user_controllers");
+const { index, createUser, findUserByUsername, login , deleteUser, subscribe, unsubscribe, makeRemark, update, changePassword, accountExists} = require("../controllers/user_controllers");
 
 router.get('/', middleware.checkAdminToken, index);
 router.post('/create', createUser);
@@ -16,5 +16,6 @@ router.patch('/remark', middleware.checkAdminToken, makeRemark);
 router.patch('/update', middleware.checkToken, update);
 router.patch('/changePassword', middleware.checkToken, changePassword);
 router.post('/login', login);
+router.get('/exists', accountExists);
 
 module.exports = router;

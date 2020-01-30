@@ -286,4 +286,19 @@ const changePassword = (req, res) => {
     return res;
 }
 
-module.exports = { index, createUser, deleteUser, findUserByUsername, login, subscribe, unsubscribe, makeRemark, update, changePassword }
+const accountExists = (req, res) => {
+    const {username} = req.body;
+    User.findOne({username: username}, (err, result) =>{
+        if(err){
+            res.status(500).json({success: false, message: "We encounter problem while trying to query the database.  Please, try again later."})
+        }
+        if(result)
+            res.status(200).json({exists: true, message: `The account (${username}) is already in the system.`})
+        else{
+            res.status(200).json({exists: false, message: `The account (${username}) isn't in the system yet.  It's available.`});
+        }
+    });
+    return res;
+}
+
+module.exports = { index, createUser, deleteUser, findUserByUsername, login, subscribe, unsubscribe, makeRemark, update, changePassword, accountExists }

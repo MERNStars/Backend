@@ -4,7 +4,7 @@ const middleware = require('./token_middleware');
 
 const { reset, generateUniqueLink } = require("../controllers/request_controllers");
 
-router.post('/reset/:uniqueKey', reset);
+router.post('/reset', reset);
 router.post('/request', generateUniqueLink)
 
 module.exports = router;
