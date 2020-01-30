@@ -19,15 +19,20 @@ const createEvent = (req, res) => {
 
 }
 
-const index = (req, res) => {
-    Event.find({}, (err, result) =>{
+const index = async (req, res) => {
+    let events = [];
+
+    Event.find({})
+    .populate('presenters')
+    .exec((err, result) =>{
         if(err){
             res.status(500).json(err);
         }
         else{
             res.status(200).json(result);
-        }
+        }  
     });
+    
     return res;
 }
 
