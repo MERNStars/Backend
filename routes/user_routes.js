@@ -16,6 +16,6 @@ router.patch('/remark', middleware.checkAdminToken, makeRemark);
 router.patch('/update', middleware.checkToken, update);
 router.patch('/changePassword', middleware.checkToken, changePassword);
 router.post('/login', login);
-router.get('/exists', accountExists);
+router.post('/exists', accountExists);
 
 module.exports = router;
