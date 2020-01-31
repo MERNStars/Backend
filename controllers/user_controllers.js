@@ -44,13 +44,28 @@ const createUser = (req, res) => {
       religion,
       newsletter,
       interests
-    })
+    });
+
+    if(!username){
+        res.status(400);
+        res.json({ success: false, message: "Username is required" });
+    }
+    else{
+
     //set an encrypted password from the password provided
-    newUser.setPassword(password);
-    //save the document
-    newUser.save()
-    .then(()=>res.status(201).json(`User account ${username} has been created!`))//return the result
-    .catch(err=> res.status(400).json('Error: ' + err));
+        newUser.setPassword(password);
+        //save the document
+        newUser.save()
+        .then(()=>{
+            res.status(200);
+            res.json({success: true, message: `Account created`});
+        })//return the result
+        .catch(err=> {
+            res.status(500);
+            res.json({success: fasle, message: `Error: ${ err}`});
+        });
+    }
+    return res;
 }
 
 const deleteUser = (req, res)=> {
