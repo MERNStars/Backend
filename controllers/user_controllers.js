@@ -32,7 +32,7 @@ const index = (req, res) => {
 }
 
 const createUser = (req, res) => {
-  const { username, password, first_name, last_name, sex, email, age, religion, newsletter, interests} = req.body;
+  const { username, password, first_name, last_name, sex, age, religion, newsletter, interests} = req.body;
     //create a new user
     const newUser = new User({
       username, 
@@ -249,7 +249,7 @@ const makeRemark = (req, res) => {
     return res;
 }
 
-const update = async (req, res) => {
+const update = (req, res) => {
     const { username, first_name, last_name, sex, age, religion, newsletter, interests, remarks } = req.body;
     const {isAdmin, token_username} = req.decoded;
 
@@ -257,7 +257,7 @@ const update = async (req, res) => {
     if(!(isAdmin || token_username === user))//if 
         return res.status(400).json({success: false, message: "You don't have the administrative rights to carryout this update."});
 
-    res = await User.updateOne({username: username}, {first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks}, 
+    User.updateOne({username: username}, {first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks}, 
         (err, result) =>{
         if(err){
             res.status(400).json(err)
