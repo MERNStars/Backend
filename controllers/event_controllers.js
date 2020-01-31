@@ -21,26 +21,28 @@ const createEvent = (req, res) => {
 
 const index = (req, res) => {
     let events = [];
-    Event.find({}).lean()
+    Event.find({})
+    .populate('presenters')
     .exec((err, result) =>{
         if(err){
             res.status(500).json(err);
         }
         else{
-            result.forEach((event, index) => {
-                Presenter.find({ _id: {$in: [...event.presenters]}})
-                .lean()
-                .exec((err, presenters) => {
-                    event["presenters_detail"] = presenters;
-                    console.log(event);
-                    events.push(event);
-                    if(index === result.length -1)
-                    {
-                        res.status(200).json(events);
-                    }
-                });
-            });
-            
+            // result.forEach((event, index) => {
+            //     Presenter.find({ _id: {$in: [...event.presenters]}})
+            //     .exec((err, presenters) => {
+            //         event["presenters_detail"] = presenters;
+            //         console.log(event);
+            //         events.push(event);
+            //         if(index === result.length -1)
+            //         {
+            //             console.log( result )
+            //             console.log( events )
+            //             res.status(200).json(events);
+            //         }
+            //     });
+            // });
+            res.status(200).json(result);
         }  
     });
     
