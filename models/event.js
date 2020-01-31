@@ -30,7 +30,8 @@ const eventSchema = new Schema({
     type: Date,
     required: true
   },
-  presenters: [ { type: Schema.Types.ObjectId, ref: "Presenter" } ],
+
+  presenters: [{ type: mongoose.Types.ObjectId, ref: "Presenter"}],
   fee:{//eg. infant(2 and below): free, child (3-12): $5, full fee: $50
       type: [feeSchema],
       default: [{"type": "free", "cost": 0}]
