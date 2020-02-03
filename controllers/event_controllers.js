@@ -43,10 +43,10 @@ const update = (req, res) => {
 
     const update = {event_name: event_name, description: description, event_date: event_date, presenters: presenters, registration_closed_date: registration_closed_date, fee: fee, is_family_friendly: is_family_friendly, minimum_age: minimum_age, event_category: event_category, images: images, published: published, status: status, event_capacity: event_capacity, attendee_count: attendee_count, attendees: attendees};
 
-    console.log(update);
+    // console.log(update);
     
-    Event.findOneAndUpdate({_id: _id}, { $set: update}, {new: true}
-    )
+    Event.findOneAndUpdate({_id: _id}, { $set: update}, {new: true})
+    .populate('presenters')
     .then(result =>{
         if(result){
             // console.log(result);        
