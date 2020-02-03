@@ -104,17 +104,20 @@ const findUserByUsername = (req, res)=> {
     
     User.findOne({username: username}, "username first_name last_name sex isAdmin email age religion newsletter interests", (err, user) => {
         if (user === null) {
-            res.status(400).send({
+            res.status(400);
+            res.send({
                 success: false,
                 message: 'User not found.'
             });
         }//User can only retrieve his/her own account or information
         //unless the user is an admin
         else if(isAdmin || token_username === username){
-            res.status(200).json(user);
+            res.status(200);
+            res.json(user);
         }
         else {
-            res.status(403).send({
+            res.status(403);
+            res.send({
               message: 'Your action is unauthorized'
             })
         }
@@ -140,7 +143,7 @@ const login = (req, res) => {
           process.env.TOKEN_SECRET,
           {expiresIn: '24h'})
 
-        res.status(201);
+        res.status(200);
         res.json({
           success: true,
           message: 'Authentication successful',
@@ -168,7 +171,8 @@ const subscribe = (req, res) => {
     //find the specified user
     User.findOne({username: username}, (err, user) => {
         if (user === null) {
-            res.status(400).send({
+            res.status(400);
+            res.send({
                 success: false,
                 message: 'User not found.'
             });
@@ -178,13 +182,21 @@ const subscribe = (req, res) => {
         else if(isAdmin || token_username === username){
             user.newsletter = true;
             user.save()
-            .then(() => res.status(200).json({success: true, message: `${username} has successfully subscribed to WeExplore newsletter.`}))
-            .catch((err) => res.status(400).json({success: false, message: `${username} has failed to subscribe to WeExplore newsletter.`}))
+            .then(() => {
+                res.status(200)
+                res.json({success: true, message: `${username} has successfully subscribed to WeExplore newsletter.`})
+            })
+            .catch((err) => { 
+                res.status(400);
+                res.json({success: false, message: `${username} has failed to subscribe to WeExplore newsletter.`
+                })
+            });
         }
         else {
-            res.status(403).send({
+            res.status(403);
+            res.send({
               message: 'Your action is unauthorized'
-            })
+            });
         }
     });
 

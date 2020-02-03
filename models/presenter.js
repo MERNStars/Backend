@@ -23,6 +23,11 @@ const presenterSchema = new Schema({
     required: true,
     minlength: 2
   },
+  type:{
+    type: String,
+    default: "presenter",
+    enum: ["instructor", "organiser", "presenter"]
+  },
   qualification:{
     type: String,
     required: true
