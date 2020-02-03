@@ -7,7 +7,7 @@ const feeSchema = new Schema(
 );
 
 const dependentSchema = new Schema({name: String, age: Number});
-const attendeeSchema = new Schema({username: String, friends: [String], dependents:[dependentSchema]});
+const attendeeSchema = new Schema({username: String, friends: [String], dependents:[dependentSchema], attended: { type: Boolean, default: false }});
 
 const eventSchema = new Schema({
   event_name: {

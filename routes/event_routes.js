@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const middleware = require('./token_middleware');
 
-const {createEvent, index, update, publish, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent, getEventAttendees, getImageUrl, togglePublish, statusUpdate} = require('../controllers/event_controllers');
+const {createEvent, index, update, publish, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent, getEventAttendees, getImageUrl, togglePublish, statusUpdate, toggleAttendedStatus} = require('../controllers/event_controllers');
 
 
 router.get('/', index);
@@ -17,5 +17,6 @@ router.patch('/status', middleware.checkAdminToken, statusUpdate);
 router.patch('/attend', middleware.checkAdminToken, attendEvent);
 router.patch('/unattend', middleware.checkAdminToken, unattendEvent);
 router.delete('/delete/:id', middleware.checkAdminToken, deleteEvent);
+router.patch('/toggleAttended', middleware.checkAdminToken, toggleAttendedStatus)
 
 module.exports = router;
