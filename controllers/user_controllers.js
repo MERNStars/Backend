@@ -33,7 +33,7 @@ const index = (req, res) => {
 }
 
 const createUser = (req, res) => {
-  const { username, password, first_name, last_name, sex, email, age, religion, newsletter, interests} = req.body;
+  const { username, password, first_name, last_name, sex, age, religion, newsletter, interests} = req.body;
     //create a new user
     const newUser = new User({
       username, 
