@@ -18,11 +18,12 @@ const index = (req, res) => {
           });
       }
       //Only Admin is allowed to have full access to user's detail
-      else if(isAdmin || token_username === username){
+      else if(isAdmin){
           res.status(200).json(users);
       }
       else {
           res.status(403).send({
+              success: false,
             message: 'Your action is unauthorized'
           })
       }
@@ -62,7 +63,7 @@ const createUser = (req, res) => {
         })//return the result
         .catch(err=> {
             res.status(500);
-            res.json({success: fasle, message: `Error: ${ err}`});
+            res.json({success: false, message: `Incorrect data type or value`});
         });
     }
     return res;
@@ -127,7 +128,9 @@ const login = (req, res) => {
   //find the specified user
   User.findOne({username : username }, function(err, user) {
     if (user === null) {
-      res.status(400).send({
+      res.status(400);
+      res.send({
+        success: false,
         message: 'User not found.'
       });
     }
@@ -137,7 +140,8 @@ const login = (req, res) => {
           process.env.TOKEN_SECRET,
           {expiresIn: '24h'})
 
-        res.status(201).json({
+        res.status(201);
+        res.json({
           success: true,
           message: 'Authentication successful',
           isAdmin: user.isAdmin,
@@ -145,8 +149,10 @@ const login = (req, res) => {
         });
       }
       else {
-        res.status(400).send({
-          message: 'Wrong Password'
+        res.status(400);
+        res.json({
+            success: false,
+            message: 'Wrong Password'
         })
       }
     }
@@ -249,7 +255,7 @@ const makeRemark = (req, res) => {
     return res;
 }
 
-const update = async (req, res) => {
+const update = (req, res) => {
     const { username, first_name, last_name, sex, age, religion, newsletter, interests, remarks } = req.body;
     const {isAdmin, token_username} = req.decoded;
 
@@ -257,7 +263,7 @@ const update = async (req, res) => {
     if(!(isAdmin || token_username === user))//if 
         return res.status(400).json({success: false, message: "You don't have the administrative rights to carryout this update."});
 
-    res = await User.updateOne({username: username}, {first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks}, 
+    User.updateOne({username: username}, {first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks}, 
         (err, result) =>{
         if(err){
             res.status(400).json(err)

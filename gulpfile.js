@@ -11,15 +11,31 @@ gulp.task("default", function() {
         env: {
             PORT: 8000
         },
-        ignore: ["./node_modules/**"]
+        ignore: ["./node_modules/*"]
     })
     .on("restart", ()=>{
         console.log("Restarting");
     });
 });
+// gulp.task("default", function() {
+    
+// });
+
+// gulp.task('default', gulp.series(nodemon({
+//         script: "index.js",
+//         ext: "js",
+//         env: {
+//             PORT: 8000
+//         },
+//         ignore: ["./node_modules/**"]
+//     })
+//     .on("restart", ()=>{
+//         console.log("Restarting");
+//     })
+//     ));
 
 gulp.task("test", ()=>{
     env({vars: {ENV: "Test"}});
-    gulp.src("tests/userIntergrationTest.js")
+    return gulp.src("tests/userIntergration.test.js")
         .pipe(gulpMocha({reporter: "nyan"}))
 });

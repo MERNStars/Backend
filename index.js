@@ -42,5 +42,5 @@ else
             console.log("Connected to db ✅");
 
     });
-mongoose.Promise = global.Promise;
+// mongoose.Promise = global.Promise;
 module.exports = app;
