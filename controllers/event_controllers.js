@@ -43,10 +43,10 @@ const update = (req, res) => {
 
     const update = {event_name: event_name, description: description, event_date: event_date, presenters: presenters, registration_closed_date: registration_closed_date, fee: fee, is_family_friendly: is_family_friendly, minimum_age: minimum_age, event_category: event_category, images: images, published: published, status: status, event_capacity: event_capacity, attendee_count: attendee_count, attendees: attendees};
 
-    console.log(update);
+    // console.log(update);
     
-    Event.findOneAndUpdate({_id: _id}, { $set: update}, {new: true}
-    )
+    Event.findOneAndUpdate({_id: _id}, { $set: update}, {new: true})
+    .populate('presenters')
     .then(result =>{
         if(result){
             // console.log(result);        
@@ -204,7 +204,7 @@ const attendEvent = (req, res) => {
     
 
     Event.findOne({ _id: _id}, (err, event) => {
-        console.log("Event found: " + event);
+        // console.log("Event found: " + event);
         if(err || event == null || event == undefined){
             return res.status(500).json({success: false, message: "Can't find the event."});
         }
@@ -212,7 +212,7 @@ const attendEvent = (req, res) => {
         const foundData = existing_attendees.find(attendee =>{
             return attendee.username === username;
         });
-        console.log("Attendee search outcome: " + foundData);
+        // console.log("Attendee search outcome: " + foundData);
         if(!foundData){
             const num_attendee = event.attendee_count + friends.length + dependents.length + 1;
 
@@ -227,6 +227,45 @@ const attendEvent = (req, res) => {
                     res.status(200).json({success: true, message: "Successfully added an attendee."});
                 else
                     res.status(400).json({success: false, message: "Failed to add attendee."});
+            });
+        }
+        else{
+            res.status(400).json({success: false, message: "Ahhh!  You have already signed up to attend the event."});
+        }
+        return event;
+    })
+    .catch(err => res.status(400).json({success: false, message: "Ooops!  Something went terribly wrong."}));
+    
+    return res;
+}
+
+
+const toggleAttendedStatus = (req, res) => {
+    const {_id, username} = req.body;
+
+    const filter = { "_id": _id };
+    // console.log("Event id: " + _id);
+
+    Event.findOne(filter, (err, event) => {
+        // console.log("Event found: " + event);
+        if(err || event == null || event == undefined){
+            return res.status(500).json({success: false, message: "Can't find the event."});
+        }
+       
+        const index = event.attendees.findIndex(attendee =>{
+            return attendee.username === username;
+        });
+        // console.log("Attendee search outcome: " + foundData);
+        if(index >= 0 && index < event.attendees.length){
+            event.attendees[index].attended = !event.attendees[index].attended;
+            event.save( 
+                err =>{
+                if(err){
+                    res.status(500).json({ success: false, message: "Failed to mark user as attended" });
+                }
+                else{
+                    res.status(200).json({success: true, message: "Successfully marked user as attended."})
+                }   
             });
         }
         else{
@@ -315,4 +354,4 @@ const statusUpdate = async (req, res) => {
 
 
 
-module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent, getEventAttendees, togglePublish, statusUpdate }
+module.exports = { createEvent, index, update, deleteEvent, findEventByKeywords, findEventById, findEventCategory, attendEvent, unattendEvent, getEventAttendees, togglePublish, statusUpdate, toggleAttendedStatus }
