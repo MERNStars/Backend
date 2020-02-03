@@ -49,45 +49,48 @@ describe("User CRUD test", ()=>{
     });
 
     it("should let user login and return a json", (done)=>{
+        const user = { username: "jackptoke@msn.com", password: "groundzero" }
+
+        agent.post("/users/login")
+        .send(user)
+        .expect(200)
+        .then(result => {
+            // console.log(result);
+            it("should fail to return user's detail", (done)=>{
+                agent.get("/users")
+                .set('Authorization', result.token)
+                .expect(403)
+                .end((err, result)=>{
+                    result.body.success.should.not.ok();
+                    result.body.message.should.equal("Your action is unauthorized");
+                    // result.body.message.should.equal("Incorrect data type or value");
+                })
+                .catch(err => console.error(err));
+                // done();
+            });
+        })
+        .catch(err => console.error(err));
+        done();
+    });
+
+    it("should let user login and return a json", (done)=>{
         const user = { username: "jackptoke@gmail.com", password: "groundzero" }
 
         agent.post("/users/login")
         .send(user)
-        .expect(201)
-        .end((err, result)=>{
-            // should(result.body.success).be.ok();
-            // console.log(result.body.token);
-            result.body.should.have.keys('success');
-            result.body.should.have.keys('token');
-            token = result.body.token;
-            // result.body.message.should.equal("Authentication successful");
-        });
-        done();
-    });
-
-    it("should fail to return user's detail", (done)=>{
-        agent.get("/users")
-        .set('Authorization', token)
-        .expect(403)
-        .end((err, result)=>{
-            result.body.success.should.not.ok();
-            result.body.message.should.equal("Your action is unauthorized");
-            // result.body.message.should.equal("Incorrect data type or value");
-        })
-        .catch(err => console.err(err));
-        done();
-    });
-
-      it("should fail to return user's detail", (done)=>{
-        agent.get("/users/jackptoke@gmail.com")
-        .set('Authorization', token)
         .expect(200)
-        .end((err, result)=>{
-            should.exist(result.body);
-        });
+        .then(result => {
+            it("should fail to return user's detail", (done)=>{
+                agent.get("/users/jackptoke@msn.com")
+                .set('Authorization', result.token)
+                .expect(200, done)
+                .catch(err => console.error(err));
+            });
+        })
+        .catch(err => console.error(err));
         done();
     });
-    //
+    
     afterEach((done)=>{
         User.deleteMany({username: { $ne: "jackptoke@gmail.com"}}).exec();
         done();

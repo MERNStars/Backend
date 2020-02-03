@@ -25,10 +25,10 @@ const index = (req, res) => {
 }
 
 const createPresenter = (req, res) => {
-  const { first_name, last_name, title, qualification, short_description, long_description, avatar } = req.body;
+  const { first_name, last_name, title, type, qualification, short_description, long_description, avatar } = req.body;
     //create a new presenter
     const newPresenter = new Presenter({
-        first_name, last_name, title, qualification, short_description, long_description, avatar
+        first_name, last_name, title, type, qualification, short_description, long_description, avatar
     });
     //save the document
     newPresenter.save()
@@ -37,8 +37,8 @@ const createPresenter = (req, res) => {
 }
 
 const updatePresenter = (req, res) => {
-    const { _id, first_name, last_name, title, qualification, short_description, long_description, avatar } = req.body;
-    Presenter.findByIdAndUpdate(_id, {first_name, last_name, title, qualification, short_description, long_description, avatar}, {useFindAndModify: false})
+    const { _id, first_name, last_name, title, type, qualification, short_description, long_description, avatar } = req.body;
+    Presenter.findByIdAndUpdate(_id, {first_name, last_name, title, type, qualification, short_description, long_description, avatar}, {useFindAndModify: false})
     .then(() => res.status(200).json({success: true, message: `Presenter ${_id} has been updated.`}))
     .catch(err => res.status(400).json('Error: ' + err));
 }
@@ -68,7 +68,7 @@ const findPresenterById = (req, res) => {
 
 const findManyPresenters = (req, res) => {
     const {query} = req.params;
-    console.log(query);
+    // console.log(query);
     ids = query.split(',');
     Presenter.find({ _id: { $in: ids}})
     .then((presenters)=> res.status(200).json(presenters))

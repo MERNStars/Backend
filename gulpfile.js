@@ -36,6 +36,6 @@ gulp.task("default", function() {
 
 gulp.task("test", ()=>{
     env({vars: {ENV: "Test"}});
-    return gulp.src("tests/userIntergration.test.js")
+    return gulp.src("tests/user.test.js")
         .pipe(gulpMocha({reporter: "nyan"}))
 });
