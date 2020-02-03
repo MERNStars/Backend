@@ -14,7 +14,7 @@ router.post('/create', middleware.checkAdminToken, createEvent);
 router.patch('/update', middleware.checkAdminToken, update);
 router.patch('/publish', middleware.checkAdminToken, togglePublish);
 router.patch('/status', middleware.checkAdminToken, statusUpdate);
-router.patch('/attend', middleware.checkAdminToken, attendEvent);
+router.patch('/attend', middleware.checkToken, attendEvent);
 router.patch('/unattend', middleware.checkAdminToken, unattendEvent);
 router.delete('/delete/:id', middleware.checkAdminToken, deleteEvent);
 router.patch('/toggleAttended', middleware.checkAdminToken, toggleAttendedStatus)
