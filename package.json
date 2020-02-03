@@ -27,7 +27,7 @@
   "scripts": {
     "test": "jest --forceExit --detectOpenHandles",
     "start": "node server.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon server.js"
   },
   "devDependencies": {
     "gulp": "^4.0.2",
