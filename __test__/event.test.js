@@ -22,7 +22,11 @@ describe("User CRUD test", ()=>{
     });
 
     it("should retrieve all events", (done)=>{
+        request.get("/events")
+        .expect(200, done);
+    });
 
+     it("should retrieve all events", (done)=>{
         request.get("/events")
         .expect(200, done);
     });
