@@ -32,7 +32,7 @@ const createPresenter = (req, res) => {
     });
     //save the document
     newPresenter.save()
-    .then(()=>res.status(201).json(`Presenter ${first_name} ${last_name} has been added!`))//return the result
+    .then(()=>res.status(201).json({ success: true, message: `Presenter ${first_name} ${last_name} has been added!`, _id: newPresenter._id }))//return the result
     .catch(err=> res.status(400).json('Error: ' + err));
 }
 
