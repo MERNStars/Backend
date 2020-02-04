@@ -84,7 +84,7 @@ const deleteUser = (req, res)=> {
         else if(isAdmin || token_username === username){
             user.remove()
             .then(()=> res.status(200).json('Your account has been deleted.  We are sorry to see you go.'))
-            .catch(err => res.status(400).json('Error: ' + err));
+            .catch(err => res.status(400).json(err));
         }
         else {
             res.status(403).send({
@@ -128,13 +128,14 @@ const findUserByUsername = (req, res)=> {
 
 const login = (req, res) => {
   const {username, password} = req.body;
+//   console.log(username, password);
   //find the specified user
   User.findOne({username : username }, function(err, user) {
-    if (user === null) {
+    if (user === null || user === undefined) {
       res.status(400);
       res.send({
         success: false,
-        message: 'User not found.'
+        message: 'User not found...'
       });
     }
     else {
@@ -272,21 +273,23 @@ const update = (req, res) => {
     const {isAdmin, token_username} = req.decoded;
 
     //A person can only change his/her own detail unless he/she is an admin
-    if(!(isAdmin || token_username === user))//if 
-        return res.status(400).json({success: false, message: "You don't have the administrative rights to carryout this update."});
-
-    User.updateOne({username: username}, {first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks}, 
-        (err, result) =>{
-        if(err){
-            res.status(400).json(err)
-        }
-        
-        if(result.n > 0)
-            res.status(200).json(result);
-        else
-            res.status(400).json(result);
-    })
-    .catch(err => res.status(400).json(err));
+    if(!(isAdmin || token_username === username)){//if 
+        res.status(400).json({success: false, message: "You don't have the administrative rights to carryout this update."});
+    }
+    else{
+        User.updateOne({username: username}, {first_name: first_name, last_name: last_name, sex: sex, religion: religion, age: age, interests: interests, newsletter: newsletter, remarks: remarks}, 
+            (err, result) =>{
+            if(err){
+                res.status(400).json(err)
+            }
+            // console.log(result);
+            if(result["n"] > 0)
+                res.status(200).json(result);
+            else
+                res.status(400).json({success: false, message: "Nothing has been updated."});
+        })
+        .catch(err => res.status(400).json(err));
+    }
     return res;
 }
 

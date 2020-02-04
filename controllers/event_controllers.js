@@ -201,7 +201,6 @@ const attendEvent = (req, res) => {
 
     const filter = { "_id": _id};
     console.log("Event id: " + _id);
-    
 
     Event.findOne({ _id: _id}, (err, event) => {
         // console.log("Event found: " + event);
