@@ -26,21 +26,20 @@ app.use(require('./routes/index'));
 //Mongoose
 const dbConfig = { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true , useFindAndModify: false };
 
-if(process.env.ENV === "Test")
-    mongoose.connect(process.env.DBTEST_URL, dbConfig, (err) => {
-        if (err)
-            console.error("Error ❌");
-        else
-            console.log("Connected to db ✅");
+// if(process.env.ENV === "Test")
+    // mongoose.connect(process.env.DBTEST_URL, dbConfig, (err) => {
+    //     if (err)
+    //         console.error("Error ❌");
+    //     else
+    //         console.log("Connected to the test db ✅");
 
-    });
-else
-    mongoose.connect(process.env.DB_URL, dbConfig, (err) => {
-        if (err)
-            console.error("Error ❌");
-        else
-            console.log("Connected to db ✅");
-
-    });
+    // });
+// else
+  mongoose.connect(process.env.DB_URL, dbConfig, (err) => {
+      if (err)
+          console.error("Error ❌");
+      else
+          console.log("Connected to the real db ✅");
+  });
 // mongoose.Promise = global.Promise;
 module.exports = app;
