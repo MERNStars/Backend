@@ -26,11 +26,13 @@ app.use(require('./routes/index'));
 //Mongoose
 const dbConfig = { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true , useFindAndModify: false };
 
-mongoose.connect(process.env.DB_URL, dbConfig, (err) => {
-    if (err)
-        console.error("Error ❌");
-    else
-        console.log("Connected to the real db ✅");
-});
+// if(process.env.ENV === "Test")
+    mongoose.connect(process.env.DBTEST_URL, dbConfig, (err) => {
+        if (err)
+            console.error("Error ❌");
+        else
+            console.log("Connected to the real test db ✅");
+
+    });
 
 module.exports = app;

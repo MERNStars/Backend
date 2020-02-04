@@ -6,7 +6,7 @@ var nodemailer = require('nodemailer');
 require("dotenv").config();
 const date = require('date-and-time');
 
-const reset = (req, res) => {
+const reset = async (req, res) => {
     //reset the password
     // const {  } = req.params;
     const { password, uniqueKey } = req.body;
@@ -15,19 +15,21 @@ const reset = (req, res) => {
     .then(request => {
         const now = new Date();
         const SIXTY_MINUTES = 60;
-        console.log("Valid key");
+        // console.log("Valid key");
+        // console.log(uniqueKey, password);
+        
         if(date.subtract(request.expiry_date, now).toMinutes() <= 0){
             //the link has expired
+            // console.log("Expired...");
+            
             res.status(400).json({success: false, message: "I'm sorry, your unique link has expired.  Please, request another one."});
         }
         else{
-            console.log("Finding user...");
-            
-            User.findOne({username: request.username}, (err, user) => {
-                console.log("Found the user...");
-                console.log(user);
-                
+            console.log(request.username);
+            User.findOne({username: request.username}, (err, user) => {        
                 if (user === null) {
+                  // console.log("Can't find user...");
+                  
                     res.status(400).send({
                         success: false,
                         message: 'User not found.'
@@ -37,11 +39,9 @@ const reset = (req, res) => {
                 //Only admin can update everyone else password
                 else{
                     user.setPassword(password);
-                    console.log("Changed the user password and saving now...");
-                    
-                    user.save()
-                    .then(() => res.status(200).json({success: true, message: `You have successfully updated the password of ${user.username}.`}))
-                    .catch((err) => res.status(400).json({success: false, message: `We are not sure, what has happened. We have failed to reset your password.`}));
+                    user.save();
+                    res.status(200).json({success: true})
+    
                 }
             });
         }
@@ -52,7 +52,7 @@ const reset = (req, res) => {
 
 
 const emailUniqueLink = async ( email, uniqueKey, firstName ) => {
-    console.log("Sending email...");
+    // console.log("Sending email...");
 
     //send an email to the 
     const transporter = nodemailer.createTransport({
@@ -192,17 +192,20 @@ const emailUniqueLink = async ( email, uniqueKey, firstName ) => {
 
     let success = false;
     let info = await transporter.sendMail(mailOptions);
-    console.log(info);
+    // console.log(info);
 }
 
 const generateUniqueLink = (req, res) => {
     //generate a unique link that will be send to the user via email
     const {email} = req.body;
+    // console.log(email);
+    
     User.findOne({"username": email})
     .then(user => {
         //if the username can't be found in the system
         // console.log("We can find you in our record.");
         // console.log(result);
+        // console.log(user);
         
         if(!user){
             return res.status(400).json({success: false, message: "Sorry, we don't have your email in our system."})
@@ -222,7 +225,10 @@ const generateUniqueLink = (req, res) => {
 
             //2. send an email with the uuid link
             emailUniqueLink(email, uniqueKey, user.first_name)
-            .catch(err => console.log(err));
+            .catch(err => {
+              res.status(500);
+              res.json({success: false, message: "Something went horribly wrong while trying to send an email to you."})
+            });
             
             // console.log("Email send...");
             newRequest.save()
@@ -230,12 +236,14 @@ const generateUniqueLink = (req, res) => {
                 // console.log("Request saved.")
                 return res.status(200).json({success: true, message: "We've sent you an email with a unique link to reset your password.  Please, check your inbox or even junk mail."});
             })
-            .catch(err => {console.log(err);
-            });
-        }
+           .catch(err => {
+              res.status(500);
+              res.json({success: false, message: "Something went horribly wrong while trying to serve you."})
+            }
+            );
+      }
     })
-    .catch(err => res.status(500).json({success: false, message: "We are having a little problem with your request."}));
-    return res;
+
 }
 
 module.exports = { reset, generateUniqueLink };
