@@ -21,13 +21,6 @@ describe("Presenter CRUD test", ()=>{
     });
 
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl91c2VybmFtZSI6ImphY2twdG9rZUBnbWFpbC5jb20iLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE1ODA3OTAwNzYsImV4cCI6MTU4MDg3NjQ3Nn0.A8P485MgtZlVzdU5IKy3DMCghtM_kjgjsfXqU7SJxx8";
-    // it("should let user login and return a json", (done)=>{
-    //     const user = { username: "jackptoke@gmail.com", password: "groundzero" };
-    //     request.post("/users/login")
-    //     .send(user)
-    //     .expect(200, done);
-    //     // done();
-    // });
 
     it("should return information of all the presenters", (done)=>{
         request.get("/presenters")

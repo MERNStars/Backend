@@ -68,25 +68,26 @@ const deleteEvent = (req, res) => {
     const {isAdmin} = req.decoded;
     //if the user is not an admin, he has no business here.
     if(!isAdmin){
-        return res.status(500).json({success: false, message: "You don't have the administrative rights to carryout this update."});
+        res.status(500).json({success: false, message: "You don't have the administrative rights to carryout this update."});
     }
-
-    Event.findByIdAndDelete(id, 
-        (err, result) =>{
-        if(err){
-            res.status(400).json(err)
-        }
-        // console.log(result);
-        
-        // if(result.n > 0)
-        else{
-            console.log("Event deleted.")
-            res.status(200).json(result);
-        }
-        // else
-        //     res.status(400).json(result);
-    })
-    .catch(err => res.status(400).json(err));
+    else{
+        Event.findByIdAndDelete(id, 
+            (err, result) =>{
+            if(err){
+                res.status(400).json(err)
+            }
+            // console.log(result);
+            
+            // if(result.n > 0)
+            else{
+                console.log("Event deleted.")
+                res.status(200).json(result);
+            }
+            // else
+            //     res.status(400).json(result);
+        })
+        .catch(err => res.status(400).json(err));
+    }
     return res;
 }
 
