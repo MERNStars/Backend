@@ -29,8 +29,27 @@ describe("User CRUD test", ()=>{
         .expect(200, done);
     });
 
+    it("should fail to match the password and then match the 2nd password.", (done)=>{
+        User.findOne({username: "jackptoke@gmail.com"})
+        .then(user => {
+            let result = user.validPassword("alskfjlaksdf");
+            expect(result).toBe(false);
+            result = user.validPassword("leveleight");
+            expect(result).toBe(true);
+            done();
+        });
+    });
+
+    it("should prohibit a user to be created without a proper email", (done)=>{
+        const newUser = {username: "jackptoke@.com", password: "groundzero", first_name: "Jack", last_name: "Toke", sex: "male", newsletter: true, age: 30, religion: "agnostic"}
+
+        request.post("/users/create")
+        .send(newUser)
+        .expect(500, done);
+    });
+
     it("should let user login and return a json", (done)=>{
-        const user = { username: "jackptoke@gmail.com", password: "groundzero" };
+        const user = { username: "jackptoke@gmail.com", password: "leveleight" };
         request.post("/users/login")
         .send(user)
         .expect(200, done);
@@ -66,7 +85,7 @@ describe("User CRUD test", ()=>{
         .expect(200, done);
     });
 
-    it("should successfully user's detail", (done)=>{
+    it("should successfully update user's detail", (done)=>{
         const newUser = {
             "username": "jackptoke@gmail.com",
             "password": "groundzero",

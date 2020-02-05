@@ -52,21 +52,21 @@ const reset = async (req, res) => {
 
 
 const emailUniqueLink = async ( email, uniqueKey, firstName ) => {
-    // console.log("Sending email...");
-
-    //send an email to the 
-    const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false, // upgrade later with STARTTLS
-        auth: {
-            user: process.env.EMAIL,
-            pass: process.env.EMAIL_PASSWORD
-        }
-    });
+    let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.USER_EMAIL,
+      pass: process.env.EMAIL_PASSWORD,
+      clientId: process.env.GMAIL_CLIENT_ID,
+      clientSecret: process.env.GMAIL_CLIENT_SECRET,
+      refreshToken: process.env.GMAIL_REFRESH_TOKEN
+    }
+  });
 
     const mailOptions = {
-        from: process.env.EMAIL, // sender address
+        from: process.env.USER_EMAIL, // sender address
         to: email, // list of receivers
         subject: 'RE: Reset password', // Subject line
         html: `<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
@@ -187,63 +187,58 @@ const emailUniqueLink = async ( email, uniqueKey, firstName ) => {
       </tr>
     </table>
   </body>
-</html>`// plain text body
+</html>`
     };
-
-    let success = false;
-    let info = await transporter.sendMail(mailOptions);
-    // console.log(info);
+    transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+      return false;
+    } else {
+      return true;
+    }
+  });
 }
 
-const generateUniqueLink = (req, res) => {
+const generateUniqueLink = async (req, res) => {
     //generate a unique link that will be send to the user via email
     const {email} = req.body;
     // console.log(email);
     
     User.findOne({"username": email})
     .then(user => {
-        //if the username can't be found in the system
-        // console.log("We can find you in our record.");
-        // console.log(result);
-        // console.log(user);
-        
         if(!user){
-            return res.status(400).json({success: false, message: "Sorry, we don't have your email in our system."})
+            res.status(400);
+            res.json({success: false, message: "Sorry, we don't have your email in our system."})
         }
         else{
-            //1. generate an uuid key and store it in the database
-            // console.log("Generating unique key");
-            
             const uniqueKey = uuid();
-            // console.log(uniqueKey);
-            // console.log(date.addHours(new Date(), 1));
             const now = new Date();
             const expiryDate = date.addHours(now, 1);
            
             const newRequest = new Request({uuid_key: uniqueKey, username: email, expiry_date: expiryDate});
-            // console.log("Created a new request.");
 
             //2. send an email with the uuid link
-            emailUniqueLink(email, uniqueKey, user.first_name)
-            .catch(err => {
-              res.status(500);
-              res.json({success: false, message: "Something went horribly wrong while trying to send an email to you."})
-            });
+            const result = emailUniqueLink(email, uniqueKey, user.first_name);
             
             // console.log("Email send...");
-            newRequest.save()
-            .then(()=>{
-                // console.log("Request saved.")
-                return res.status(200).json({success: true, message: "We've sent you an email with a unique link to reset your password.  Please, check your inbox or even junk mail."});
-            })
-           .catch(err => {
-              res.status(500);
-              res.json({success: false, message: "Something went horribly wrong while trying to serve you."})
+            if(result){
+                newRequest.save()
+                .then(()=>{
+                    res.status(200);
+                    res.json({success: true, message: "We've sent you an email with a unique link to reset your password.  Please, check your inbox or even junk mail."});
+                })
+              .catch(err => {
+                  res.status(500);
+                  res.json({success: false, message: "Something went horribly wrong while trying to serve you."})
+                }
+                );
             }
-            );
+            else{
+              res.status(500);
+                  res.json({success: false, message: "Something went horribly wrong while trying to serve you."})
+            }
       }
     })
-
+  return res;
 }
 
 module.exports = { reset, generateUniqueLink };

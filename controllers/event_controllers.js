@@ -9,14 +9,15 @@ const createEvent = (req, res) => {
     const {isAdmin} = req.decoded;
     //if the user is not an admin, he has no business here.
     if(!isAdmin){
-        return res.status(401).json({success: false, message: "You don't have the administrative rights to carryout this update."});
+        res.status(401).json({success: false, message: "You don't have the administrative rights to carryout this update."});
     }
-
-    const newEvent = new Event({event_name, description, event_date, presenters,registration_closed_date, fee, is_family_friendly, minimum_age, event_capacity, event_category, images, published, status});
-    newEvent.save()
-    .then(()=>res.status(201).json(`A new event has been created!`))//return the result
-    .catch(err=> res.status(500).json('Error: ' + err));
-
+    else{
+        const newEvent = new Event({event_name, description, event_date, presenters,registration_closed_date, fee, is_family_friendly, minimum_age, event_capacity, event_category, images, published, status});
+            newEvent.save()
+            .then(()=>res.status(201).json(`A new event has been created!`))//return the result
+            .catch(err=> res.status(500).json('Error: ' + err));
+    }
+    return res;
 }
 
 const index = async (req, res) => {
@@ -37,7 +38,7 @@ const index = async (req, res) => {
 }
 
 const update = (req, res) => {
-    console.log("Updating event in the backend...");
+    // console.log("Updating event in the backend...");
     
     const {_id, event_name, description, event_date, presenters,registration_closed_date, fee, is_family_friendly, minimum_age, event_capacity, event_category, images, published, status, attendee_count, attendees} = req.body;
 
@@ -80,7 +81,6 @@ const deleteEvent = (req, res) => {
             
             // if(result.n > 0)
             else{
-                console.log("Event deleted.")
                 res.status(200).json(result);
             }
             // else
@@ -107,7 +107,7 @@ const findEventByKeywords = (req, res) => {
     
     const conditions = [...byEventName, ...byCategory, ...byDescription]
 
-    console.log(conditions);
+    // console.log(conditions);
 
     Event.find( { $or: conditions })
     .then((events)=> res.status(200).json(events))
