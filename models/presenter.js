@@ -42,7 +42,8 @@ const presenterSchema = new Schema({
   },
   //Todo: modify the controller
   contact_info:{
-    type: [{name: String, url: String}]
+    type: String,
+    required: false
   },
   avatar:{
     type: String,

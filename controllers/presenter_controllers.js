@@ -25,10 +25,10 @@ const index = (req, res) => {
 }
 
 const createPresenter = (req, res) => {
-  const { first_name, last_name, title, type, qualification, short_description, long_description, avatar } = req.body;
+  const { first_name, last_name, title, type, qualification, short_description, long_description, avatar, contact_info } = req.body;
     //create a new presenter
     const newPresenter = new Presenter({
-        first_name, last_name, title, type, qualification, short_description, long_description, avatar
+        first_name, last_name, title, type, qualification, short_description, long_description, avatar, contact_info
     });
     //save the document
     newPresenter.save()
@@ -37,8 +37,8 @@ const createPresenter = (req, res) => {
 }
 
 const updatePresenter = (req, res) => {
-    const { _id, first_name, last_name, title, type, qualification, short_description, long_description, avatar } = req.body;
-    Presenter.findByIdAndUpdate(_id, {first_name, last_name, title, type, qualification, short_description, long_description, avatar}, {useFindAndModify: false})
+    const { _id, first_name, last_name, title, type, qualification, short_description, long_description, avatar, contact_info } = req.body;
+    Presenter.findByIdAndUpdate(_id, {first_name, last_name, title, type, qualification, short_description, long_description, avatar, contact_info}, {useFindAndModify: false})
     .then(() => res.status(200).json({success: true, message: `Presenter ${_id} has been updated.`}))
     .catch(err => res.status(400).json('Error: ' + err));
 }
