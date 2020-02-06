@@ -202,14 +202,17 @@ const generateUniqueLink = async (req, res) => {
     //generate a unique link that will be send to the user via email
     const {email} = req.body;
     // console.log(email);
+    // console.log("Request received...");
     
     User.findOne({"username": email})
     .then(user => {
         if(!user){
+          // console.log("User not found...");
             res.status(400);
             res.json({success: false, message: "Sorry, we don't have your email in our system."})
         }
         else{
+          // console.log("Found the user...");
             const uniqueKey = uuid();
             const now = new Date();
             const expiryDate = date.addHours(now, 1);
@@ -221,6 +224,7 @@ const generateUniqueLink = async (req, res) => {
             
             // console.log("Email send...");
             if(result){
+                // console.log("Email successfully sent.....");
                 newRequest.save()
                 .then(()=>{
                     res.status(200);
@@ -233,6 +237,7 @@ const generateUniqueLink = async (req, res) => {
                 );
             }
             else{
+              // console.log("Email failed...");
               res.status(500);
                   res.json({success: false, message: "Something went horribly wrong while trying to serve you."})
             }
